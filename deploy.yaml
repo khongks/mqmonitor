@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mqmonitor
+  namepsace: mq
+type: Opaque
+data:
+  mqQueueManagerName: SMALLQM
+  mqHostname: smallqm-ibm-mq.mq.svc.cluster.local
+  mqPort: "1414"
+  mqChannelName: SMALLQMCHL_NOTLS
+  #user: "mqadmin"
+  #password: "Passw0rd!"
+  mqGenericQueueName: "*"
+  monitorPeriod: "60"
+  splunkEndpoint: https://prd-p-wdhbk.splunkcloud.com:8088/services/collector/event
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: splunk-credentials
+  namepsace: mq
+type: Opaque
+data:
+  splunkToken: "OWUyMDA4NjctZWRhMy00MjEzLWE5ODMtMzhjYzlmYWIzMDE5Cg=="
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqmonitor
+  namepsace: mq
+  labels:
+    app: mqmonitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqmonitor
+  template:
+    metadata:
+      labels:
+        app: mqmonitor
+    spec:
+      containers:
+        - name: mqmonitor
+          image: docker.io/koksing/mqmonitor:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+          env:
+            - name: SPLUNK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: splunk-credentials
+                  key: splunkToken
+            - name: MQ_QUEUEMANAGERNAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: mqQueueManagerName
+            - name: MQ_HOSTNAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: mqHostname
+            - name: MQ_PORT
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: mqPort
+            - name: MQ_CHANNELNAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: mqChannelName
+            - name: MQ_GENERICQUEUENAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: mqGenericQueueName
+            - name: SPLUNK_ENDPOINT
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: splunkEndpoint
