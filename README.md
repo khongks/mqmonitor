@@ -2,7 +2,7 @@
 
 This application is used to monitor the queue depth of an IBM MQ queue manager. It uses a PCF commands to inquire the current queue depth and the maximum queue manager. If it is above the defined "Red" or "Orange" threshold it will send a notification to Splunk. This is written in Springboot.
 
-![Alt text here](images/mqmonitor.drawio.png)
+![Alt text here](images/mqmonitor.png)
 
 1. Use Maven to compile the code.
 
