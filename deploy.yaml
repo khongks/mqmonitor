@@ -13,8 +13,8 @@ data:
   #password: "Passw0rd!"
   mqGenericQueueName: "*"
   monitorPeriod: "60"
-  monitorThresholdRed: "90"
-  monitorThresholdOrange: "50"
+  monitorThresholdRed: "0.9"
+  monitorThresholdAmber: "0.5"
   splunkEndpoint: https://prd-p-wdhbk.splunkcloud.com:8088/services/collector/event
 ---
 apiVersion: v1
@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: mqmonitor
-          image: docker.io/koksing/mqmonitor:0.0.1-SNAPSHOT
+          image: docker.io/koksing/mqmonitor:1.0.0
           imagePullPolicy: Always
           resources:
             requests:
@@ -85,6 +85,21 @@ spec:
                 configMapKeyRef:
                   name: mqmonitor
                   key: mqGenericQueueName
+            - name: MONITOR_PERIOD
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: monitorPeriod
+            - name: MONITOR_THRESHOLDRED
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: monitorThresholdRed
+            - name: MONITOR_THRESHOLDAMBER
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor
+                  key: monitorThresholdAmber
             - name: SPLUNK_ENDPOINT
               valueFrom: 
                 configMapKeyRef:

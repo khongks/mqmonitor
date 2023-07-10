@@ -57,7 +57,6 @@ public class MQQueueMonitor {
         this.mqProperties = mqProperties;
         this.splunkProperties = splunkProperties;
         this.monitorProperties = monitorProperties;
-
         try {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new SecureRandom());
@@ -145,17 +144,17 @@ public class MQQueueMonitor {
                     }
                     int curDepth = responses[i].getIntParameterValue(CMQC.MQIA_CURRENT_Q_DEPTH);
                     int maxDepth = responses[i].getIntParameterValue(CMQC.MQIA_MAX_Q_DEPTH);
-                    log.info("Name="+name + " : curDepth=" + curDepth + " : maxDepth=" + maxDepth);
+                    log.info("Name="+name + " : curDepth=" + curDepth + ", maxDepth=" + maxDepth + ", thresholdRed: " + monitorProperties.getThresholdRed().floatValue() + ", thresholdAmber: " + (float)monitorProperties.getThresholdAmber().floatValue());
                     if (curDepth == maxDepth) {
                         String message = "Error: Name="+name + " : current depth equals max depth ["+maxDepth+"]";
                         log.error(message);
                         sendToSplunk(message);
-                    } else if (curDepth >= (maxDepth * monitorProperties.getMonitorThresholdRed().intValue()/10)) {
-                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getMonitorThresholdRed()+ "% of max depth ["+maxDepth+"]";
+                    } else if (curDepth >= (maxDepth * monitorProperties.getThresholdRed().floatValue())) {
+                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getThresholdRed().floatValue()*100+ "% of max depth ["+maxDepth+"]";
                         log.warn(message);
                         sendToSplunk(message);
-                    } else if (curDepth >= (maxDepth * monitorProperties.getMonitorThresholdOrange().intValue()/10)) {
-                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getMonitorThresholdOrange() + "% of max depth ["+maxDepth+"]";
+                    } else if (curDepth >= (maxDepth * monitorProperties.getThresholdAmber().floatValue())) {
+                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getThresholdAmber().floatValue()*100 + "% of max depth ["+maxDepth+"]";
                         log.info(message);
                         sendToSplunk(message);
                     }

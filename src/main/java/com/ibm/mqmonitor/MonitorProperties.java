@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class MonitorProperties {
     
     private Integer period;
-    private Integer monitorThresholdRed;
-    private Integer monitorThresholdOrange;
+    private Float thresholdRed;
+    private Float thresholdAmber;
     public Integer getPeriod() {
         return period;
     }
@@ -17,23 +17,23 @@ public class MonitorProperties {
         this.period = period;
     }
 
-    public Integer getMonitorThresholdRed() {
-        return monitorThresholdRed;
+    public Float getThresholdRed() {
+        return thresholdRed;
     }
-    public void setMonitorThresholdRed(Integer monitorThresholdRed) {
-        this.monitorThresholdRed = monitorThresholdRed;
+    public void setThresholdRed(Float thresholdRed) {
+        this.thresholdRed = thresholdRed;
     }
 
-    public Integer getMonitorThresholdOrange() {
-        return monitorThresholdOrange;
+    public Float getThresholdAmber() {
+        return thresholdAmber;
     }
-    public void setMonitorThresholdOrange(Integer monitorThresholdOrange) {
-        this.monitorThresholdOrange = monitorThresholdOrange;
+    public void setThresholdAmber(Float thresholdAmber) {
+        this.thresholdAmber = thresholdAmber;
     }
     @Override
     public String toString() {
-        return "MonitorProperties [period=" + period + ", monitorThresholdRed=" + monitorThresholdRed
-                + ", monitorThresholdOrange=" + monitorThresholdOrange + "]";
+        return "MonitorProperties [period=" + period + ", thresholdRed=" + thresholdRed
+                + ", thresholdAmber=" + thresholdAmber + "]";
     }
 
 
