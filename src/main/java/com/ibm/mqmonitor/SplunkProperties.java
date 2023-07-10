@@ -5,8 +5,6 @@ import java.io.Serializable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.common.util.StringUtils;
-
 @Component
 @ConfigurationProperties(prefix = "splunk")
 public class SplunkProperties implements Serializable {
