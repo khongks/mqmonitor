@@ -13,6 +13,8 @@ data:
   #password: "Passw0rd!"
   mqGenericQueueName: "*"
   monitorPeriod: "60"
+  monitorThresholdRed: "90"
+  monitorThresholdOrange: "50"
   splunkEndpoint: https://prd-p-wdhbk.splunkcloud.com:8088/services/collector/event
 ---
 apiVersion: v1

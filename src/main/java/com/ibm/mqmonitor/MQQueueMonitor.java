@@ -50,11 +50,13 @@ public class MQQueueMonitor {
     private MQQueueManager queueManager;
     private MQProperties mqProperties;
     private SplunkProperties splunkProperties;
+    private MonitorProperties monitorProperties;
     private PCFMessageAgent agent = null;
 
-    public MQQueueMonitor(MQProperties mqProperties, SplunkProperties splunkProperties) {
+    public MQQueueMonitor(MQProperties mqProperties, SplunkProperties splunkProperties, MonitorProperties monitorProperties) {
         this.mqProperties = mqProperties;
         this.splunkProperties = splunkProperties;
+        this.monitorProperties = monitorProperties;
 
         try {
             sslContext = SSLContext.getInstance("TLS");
@@ -67,6 +69,7 @@ public class MQQueueMonitor {
     public void connect() {
 		log.info("connect: " + mqProperties.toString());
         log.info("connect: " + splunkProperties.toString());
+        log.info("connect: " + monitorProperties.toString());
         try {
             Hashtable<String,Object> mqht = new Hashtable<String, Object>();
             mqht.put(CMQC.CHANNEL_PROPERTY, mqProperties.getChannelName().toString());
@@ -116,7 +119,6 @@ public class MQQueueMonitor {
         if(reconnect) {
             connect();
         }
-
         try {
             // https://www.ibm.com/docs/en/ibm-mq/9.3?topic=formats-mqcmd-inquire-q-inquire-queue
             PCFMessage request = new PCFMessage(CMQCFC.MQCMD_INQUIRE_Q);
@@ -148,12 +150,12 @@ public class MQQueueMonitor {
                         String message = "Error: Name="+name + " : current depth equals max depth ["+maxDepth+"]";
                         log.error(message);
                         sendToSplunk(message);
-                    } else if (curDepth >= (maxDepth * 0.9)) {
-                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is within 90% of max depth ["+maxDepth+"]";
+                    } else if (curDepth >= (maxDepth * monitorProperties.getMonitorThresholdRed().intValue()/10)) {
+                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getMonitorThresholdRed()+ "% of max depth ["+maxDepth+"]";
                         log.warn(message);
                         sendToSplunk(message);
-                    } else if (curDepth >= (maxDepth * 0.5)) {
-                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is within 50% of max depth ["+maxDepth+"]";
+                    } else if (curDepth >= (maxDepth * monitorProperties.getMonitorThresholdOrange().intValue()/10)) {
+                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getMonitorThresholdOrange() + "% of max depth ["+maxDepth+"]";
                         log.info(message);
                         sendToSplunk(message);
                     }
