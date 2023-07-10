@@ -53,10 +53,20 @@ public class MQQueueMonitor {
     private MonitorProperties monitorProperties;
     private PCFMessageAgent agent = null;
 
+    private String splunkAuthorization;
+    private String splunkEndpoint;
+
     public MQQueueMonitor(MQProperties mqProperties, SplunkProperties splunkProperties, MonitorProperties monitorProperties) {
         this.mqProperties = mqProperties;
         this.splunkProperties = splunkProperties;
         this.monitorProperties = monitorProperties;
+
+        // need to strip off trailing newline, when reading from secrets
+        splunkAuthorization = splunkProperties.getToken();
+        splunkAuthorization = "Splunk " + splunkAuthorization.replaceAll("\r", "").replaceAll("\n", "");
+        splunkEndpoint = splunkProperties.getEndpoint();
+        splunkEndpoint = splunkEndpoint.replaceAll("\r", "").replaceAll("\n", "");
+
         try {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new SecureRandom());
@@ -199,11 +209,9 @@ public class MQQueueMonitor {
 
             String jsonBody = "{\"event\": \"" + message + "\"}";
             log.info(jsonBody);
-            String authorization = "Splunk " + splunkProperties.getToken();
-            authorization = authorization.replaceAll("\r", "").replaceAll("\n", "");
             HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(splunkProperties.getEndpoint()))
-                        .headers("Authorization", authorization)
+                        .uri(new URI(splunkEndpoint))
+                        .headers("Authorization", splunkAuthorization)
                         .headers("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                         .build();
@@ -228,9 +236,6 @@ public class MQQueueMonitor {
             log.error("InterruptedException: Error: " + ie.getLocalizedMessage());
             ie.printStackTrace();
         }
-        // catch (NoSuchAlgorithmException nsae) {
-        //     log.error("Error: " + nsae.getLocalizedMessage());
-        // }
     }
 
     public MQProperties getMqProperties() {

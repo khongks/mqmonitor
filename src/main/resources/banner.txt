@@ -6,4 +6,4 @@
 ██║ ╚═╝ ██║╚██████╔╝    ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║   ██║   ╚██████╔╝██║  ██║
 ╚═╝     ╚═╝ ╚══▀▀═╝     ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
                                                                                    
-MQ Monitor | By Kok Sing Khong, IBM Australia | Version: 0.0.1-SNAPSHOT
+MQ Monitor | By Kok Sing Khong, IBM Australia | Version: 1.0.0
