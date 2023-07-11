@@ -52,4 +52,28 @@ oc apply -f secret.yaml -nmq
 oc apply -f deploy.yaml -nmq
 ```
 
-6. Configure **deploy.yaml**, if needed
+6. Configure **deploy.yaml**, where needed, e.g. the location to pull the image. In this example, I am pulling from my personal Dockerhub registry.
+
+```
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqmonitor
+  template:
+    metadata:
+      labels:
+        app: mqmonitor
+    spec:
+      containers:
+        - name: mqmonitor
+          image: docker.io/koksing/mqmonitor:1.0.0
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+```
