@@ -160,11 +160,11 @@ public class MQQueueMonitor {
                         log.error(message);
                         sendToSplunk(message);
                     } else if (curDepth >= (maxDepth * monitorProperties.getThresholdRed().floatValue())) {
-                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getThresholdRed().floatValue()*100+ "% of max depth ["+maxDepth+"]";
+                        String message = "Warning: Name="+name + " : current depth ["+curDepth+"] is above " + monitorProperties.getThresholdRed().floatValue()*100+ "% of max depth ["+maxDepth+"]";
                         log.warn(message);
                         sendToSplunk(message);
                     } else if (curDepth >= (maxDepth * monitorProperties.getThresholdAmber().floatValue())) {
-                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is within " + monitorProperties.getThresholdAmber().floatValue()*100 + "% of max depth ["+maxDepth+"]";
+                        String message = "Info: Name="+name + " : current depth ["+curDepth+"] is above " + monitorProperties.getThresholdAmber().floatValue()*100 + "% of max depth ["+maxDepth+"]";
                         log.info(message);
                         sendToSplunk(message);
                     }
