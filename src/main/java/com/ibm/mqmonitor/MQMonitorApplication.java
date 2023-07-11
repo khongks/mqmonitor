@@ -15,7 +15,7 @@ public class MQMonitorApplication implements CommandLineRunner {
 	@Autowired
 	private MQQueueMonitor monitor;
 
-    @Autowired
+	@Autowired
     private MQProperties mqProperties;
 
     @Autowired

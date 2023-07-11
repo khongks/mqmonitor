@@ -132,7 +132,7 @@ public class MQQueueMonitor {
             // https://www.ibm.com/docs/en/ibm-mq/9.3?topic=formats-mqcmd-inquire-q-inquire-queue
             PCFMessage request = new PCFMessage(CMQCFC.MQCMD_INQUIRE_Q);
             // Add generic queue name. E.g. *TEST
-            request.addParameter(CMQC.MQCA_Q_NAME, "*");
+            request.addParameter(CMQC.MQCA_Q_NAME, mqProperties.getGenericQueueName());
             // Add parameter to request only local queues
             request.addParameter(CMQC.MQIA_Q_TYPE, CMQC.MQQT_LOCAL);
             // Add parameter to request only queue name, current depth and max depth
