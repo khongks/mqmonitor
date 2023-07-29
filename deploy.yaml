@@ -2,15 +2,21 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mqmonitor-configmap
-  namepsace: mq
-type: Opaque
+  namespace: mqmonitor
 data:
-  mqQueueManagerName: SMALLQM
-  mqHostname: smallqm-ibm-mq.mq.svc.cluster.local
+  mqQueueManagerName: QM2
+  mqHostname: qm2-ibm-mq.mq.svc.cluster.local
   mqPort: "1414"
-  mqChannelName: SMALLQMCHL_NOTLS
+  mqChannelName: QM2CHL_MTLS
   mqGenericQueueName: "*"
   monitorPeriod: "60"
+  mqTlsMode: "mtls"
+  mqTlsDebug: "false"
+  mqTlsCipherSuite: "TLS_RSA_WITH_AES_256_GCM_SHA384"
+  mqTlsKeystoreFilename: "/etc/certs/keystore.jks"
+  mqTlsKeystoreType: "JKS"
+  mqTlsTruststoreFilename: "/etc/certs/truststore.jks"
+  mqTlsTruststoreType: "JKS"
   monitorThresholdRed: "0.9"
   monitorThresholdAmber: "0.5"
 ---
@@ -18,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mqmonitor
-  namepsace: mq
+  namespace: mqmonitor
   labels:
     app: mqmonitor
 spec:
@@ -31,9 +37,11 @@ spec:
       labels:
         app: mqmonitor
     spec:
+      imagePullSecrets:
+        - name: quayio-pull-secret
       containers:
         - name: mqmonitor
-          image: docker.io/koksing/mqmonitor:1.0.0
+          image: quay.io/kskhong/mqmonitor:1.0.0
           imagePullPolicy: Always
           resources:
             requests:
@@ -93,3 +101,57 @@ spec:
                 configMapKeyRef:
                   name: mqmonitor-configmap
                   key: monitorThresholdAmber
+            - name: MQ_TLS_MODE
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsMode
+            - name: MQ_TLS_CIPHER_SUITE
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsCipherSuite
+            - name: MQ_TLS_KEYSTORE_FILENAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsKeystoreFilename
+            - name: MQ_TLS_KEYSTORE_TYPE
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsKeystoreType
+            - name: MQ_TLS_TRUSTSTORE_FILENAME
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsTruststoreFilename
+            - name: MQ_TLS_TRUSTSTORE_TYPE
+              valueFrom: 
+                configMapKeyRef:
+                  name: mqmonitor-configmap
+                  key: mqTlsTruststoreType
+            - name: MQ_TLS_KEYSTORE_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: mqmonitor-secret
+                  key: mqTlsKeystorePassword
+            - name: MQ_TLS_TRUSTSTORE_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: mqmonitor-secret
+                  key: mqTlsTruststorePassword
+          volumeMounts:
+            - mountPath: /etc/certs
+              readOnly: true
+              name: volume-certs
+      volumes:
+        - name: volume-certs
+          secret:
+            secretName: mqmonitor-secret
+            defaultMode: 0640
+            items:
+              - key: mqTlsKeystore
+                path: keystore.jks
+              - key: mqTlsTruststore
+                path: truststore.jks

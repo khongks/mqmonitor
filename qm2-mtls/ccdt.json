@@ -1,0 +1,24 @@
+{
+    "channel":
+    [
+        {
+            "name": "QM2CHL_MTLS",
+            "clientConnection":
+            {
+                "connection":
+                [
+                    {
+                        "host": "qm2-ibm-mq-qm-mq.apps.ocp-3100015379-l0ri.cloud.techzone.ibm.com",
+                        "port": 443
+                    }
+                ],
+                "queueManager": "QM2"
+            },
+            "transmissionSecurity":
+            {
+              "cipherSpecification": "ANY_TLS12_OR_HIGHER"
+            },
+            "type": "clientConnection"
+        }
+   ]
+}

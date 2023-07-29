@@ -22,6 +22,9 @@ public class MQMonitorApplication implements CommandLineRunner {
     private SplunkProperties splunkProperties;
 
 	@Autowired
+	private TLSProperties tlsProperties;
+
+	@Autowired
 	private MonitorProperties monitorProperties;
 
 	public static void main(String[] args) {
@@ -29,15 +32,16 @@ public class MQMonitorApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		log.info(mqProperties.toString());
 		log.info(splunkProperties.toString());
 		log.info(monitorProperties.toString());
+		log.info(tlsProperties.toString());
 		// MQQueueMonitor monitor = new MQQueueMonitor();
 		monitor.connect();
 		for(;;) {
 			log.info("Start monitoring");
-			monitor.doPCF();
+		    monitor.doPCF();
 			try { Thread.sleep(monitorProperties.getPeriod().intValue()*1000); } catch(Exception e) {}
 		}
 	}

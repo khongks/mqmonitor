@@ -61,7 +61,7 @@ public class MQProperties implements Serializable {
     @Override
     public String toString() {
         return "MQProperties [queueManagerName=" + queueManagerName + ", hostname=" + hostname + ", port=" + port
-                + ", channelName=" + channelName + ", user=" + user + ", password=" + password + ", genericQueueName="
+                + ", channelName=" + channelName + ", user=" + user + ", password=" + Utils.maskString(password, 5) + ", genericQueueName="
                 + genericQueueName + "]";
     }
     @Override

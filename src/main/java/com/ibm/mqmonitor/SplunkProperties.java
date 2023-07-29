@@ -25,7 +25,7 @@ public class SplunkProperties implements Serializable {
     }
     @Override
     public String toString() {
-        return "SplunkProperties [token=" + maskString(token, 30) + ", endpoint=" + endpoint + "]";
+        return "SplunkProperties [token=" + Utils.maskString(token, 30) + ", endpoint=" + endpoint + "]";
     }
     @Override
     public int hashCode() {
@@ -57,17 +57,4 @@ public class SplunkProperties implements Serializable {
         return true;
     }
 
-    private String maskString(String s, int x) {
-        int n = s.length()/x;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            if (n >= 1 && (i < n || i >= (s.length() - n))) {
-                sb.append(s.charAt(i));
-            }
-            else {
-                sb.append("*");
-            }
-        }
-        return sb.toString();
-    }
 }
