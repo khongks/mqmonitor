@@ -9,7 +9,6 @@ data:
   mqPort: "1414"
   mqChannelName: QM2CHL_MTLS
   mqGenericQueueName: "*"
-  monitorPeriod: "60"
   mqTlsMode: "mtls"
   mqTlsDebug: "false"
   mqTlsCipherSuite: "TLS_RSA_WITH_AES_256_GCM_SHA384"
@@ -17,6 +16,7 @@ data:
   mqTlsKeystoreType: "JKS"
   mqTlsTruststoreFilename: "/etc/certs/truststore.jks"
   mqTlsTruststoreType: "JKS"
+  monitorPeriod: "60"
   monitorThresholdRed: "0.9"
   monitorThresholdAmber: "0.5"
 ---

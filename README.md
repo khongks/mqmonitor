@@ -30,8 +30,14 @@ docker push koksing/mqmonitor:1.0.0
 
 4. Configure the secret.yaml. You need to configure the Splunk Token and Splunk Endpoint. You can register for a SplunkCloud trial. Once configured, you create a secret.
 
-- **splunkToken**
-- **splunkEndpoint**
+| Field | Description |
+| ----- | ----------- |
+| **splunkToken** | The token that is obtained when you configure HTTP Event Collector (HEC). This is base64 encoded |
+| **splunkEndpoint** | The endpoint of Splunk HTTP Event Collector (HEC). This is base64 encoded |
+| **mqTlsKeystore** | The content of the JKS keystore file. This is base64 encoded. |
+| **mqTlsKeystorePassword** | Password of the JKS keystore file. This is base64 encoded. |
+| **mqTlsTruststore** | The content of the JKS truststore file. This is base64 encoded. |
+| **mqTlsTruststorePassword** | Password of the JKS truststore file. This is base64 encoded. |
 
 ```
 oc apply -f secret.yaml -nmq
@@ -39,14 +45,23 @@ oc apply -f secret.yaml -nmq
 
 5. Configure the configmap in the deploy.yaml.
 
-- **mqQueueManagerName**: Name of the MQ queue manager.
-- **mqHostname**: On OpenShift, this is the services of the MQ queue manager.
-- **mqPort**: This is the port of MQ traffic, usually is 1414.
-- **mqChannelName**: This is the channel name.
-- **mqGenericQueueName**: This is the "generic" queue name. You can used pattern like this "**TEST*".
-- **monitorPeriod**: This is the monitor period. Recommended minimal is 60 seconds.
-- **monitorThresholdRed**: This is the High threshold. Recomended is 0.9.
-- **monitorThresholdAmber**: This is the Low threshold. Recommended is 0.5.
+| Field | Description |
+| ----- | ------------|
+| **mqQueueManagerName** | Name of the MQ queue manager. |
+| **mqHostname** | On OpenShift, this is the Kubernetes service of the MQ queue manager. |
+| **mqPort** | This is the port of MQ traffic, usually is 1414. |
+| **mqChannelName** | This is the channel name. In this example, there are 3 options QM2CHL for no TLS, QM2CHL_TLS for TLS and QM2CHL_MTLS for mutual TLS. |
+| **mqGenericQueueName** | This is the "generic" queue name. You can used pattern like this "**TEST*". |
+| **mqTlsMode** | This set the mode of TLS, none for no TLS, tls for TLS and mtls for mutual TLS. |
+| **mqTlsDebug** | Enable or disable debugging mode for TLS communications. |
+| **mqTlsCipherSuite** | Refer to the [documentation](https://www.ibm.com/docs/en/ibm-mq/9.3?topic=jms-tls-cipherspecs-ciphersuites-in-mq-classes) for valid supported. |
+| **mqTlsKeystoreFilename** | Specify the location of the keystore, depending on how the secret is mapped to volume. |
+| **mqTlsKeystoreType** | JKS or PKCS12 |
+| **mqTlsTruststoreFilename** | Specify the location of the truststore, depending on how the secret is mapped to volume. |
+| **mqTlsTruststoreType** | JKS or PKCS12 |
+| **monitorPeriod** | This is the monitor period. Recommended minimal is 60 seconds. |
+| **monitorThresholdRed** |This is the High threshold. Recomended is 0.9. |
+| **monitorThresholdAmber** | This is the Low threshold. Recommended is 0.5. |
 
 ```
 oc apply -f deploy.yaml -nmq
