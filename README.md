@@ -7,7 +7,7 @@ This application is used to monitor the queue depth of an IBM MQ queue manager. 
 1. Use Maven to compile the code.
 
 ```
-maven install
+mvn install
 ```
 
 2. Build the image
